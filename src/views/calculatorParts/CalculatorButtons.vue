@@ -3,7 +3,19 @@
     <h1>{{ msg }}</h1>
     <button @click="numbWritten(1)">1</button>
     <button @click="numbWritten(2)">2</button>
-    <button @click="plusWritten">+</button>
+    <button @click="numbWritten(3)">3</button>
+    <button @click="numbWritten(4)">4</button>
+    <button @click="numbWritten(5)">5</button>
+    <button @click="numbWritten(6)">6</button>
+    <button @click="numbWritten(7)">7</button>
+    <button @click="numbWritten(8)">8</button>
+    <button @click="numbWritten(9)">9</button>
+    <button @click="numbWritten(0)">0</button>
+  
+    <button @click="setOperation((n1, n2) => n1 + n2)">+</button>
+    <button @click="setOperation((n1, n2) => n1 - n2)">-</button>
+    <button @click="setOperation((n1, n2) => n1 * n2)">*</button>
+    <button @click="setOperation((n1, n2) => n1 / n2)">/</button>
     <button @click="totalReset">AC</button>
     
   </div>
@@ -19,7 +31,7 @@ export default {
     return {
       oldNumb: 0,
       newNumb: 0,
-      function: null,
+      func: null,
       numb: 2,
     };
   },
@@ -33,12 +45,18 @@ export default {
       console.log("newNumb: " + this.newNumb);
       console.log("oldNumb: " + this.oldNumb);
     },
-    plusWritten(){
-      if(this.function === null){
-        this.oldNumb = this.newNumb;
+    setOperation(newFunc){
+      if(this.newNumb === 0 && this.func == ((n1, n2) => n1 / n2)){
+        this.oldNumb = NaN;
+      } else{
+        if(this.func === null){
+          this.oldNumb = this.newNumb;
+        } else{
+          this.oldNumb = this.func(this.oldNumb, this.newNumb);
+        }
       }
-      this.newNumb=0;
-      this.function = (numb1, numb2) => numb1+numb2;
+      this.newNumb = 0;
+      this.func = newFunc;
       console.log("newNumb: " + this.newNumb);
       console.log("oldNumb: " + this.oldNumb);
     },
@@ -46,6 +64,8 @@ export default {
       this.oldNumb=0;
       this.newNumb=0;
       this.function=null;
+      console.log("newNumb: " + this.newNumb);
+      console.log("oldNumb: " + this.oldNumb);
     },
   },
 };
