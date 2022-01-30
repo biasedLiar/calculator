@@ -14,13 +14,14 @@
     <button @click="numbWritten(0)">0</button>
     <button @click="addDot">.</button>
   
-    <button @click="setOperation((n1, n2) => n1 + n2)">+</button>
-    <button @click="setOperation((n1, n2) => n1 - n2)">-</button>
-    <button @click="setOperation((n1, n2) => n1 * n2)">*</button>
-    <button @click="setOperation((n1, n2) => n1 / n2)">/</button>
+    <button @click="setOperation((n1, n2) => n1 + n2, false)">+</button>
+    <button @click="setOperation((n1, n2) => n1 - n2, false)">-</button>
+    <button @click="setOperation((n1, n2) => n1 * n2, false)">*</button>
+    <button @click="setOperation((n1, n2) => n1 / n2, true)">/</button>
     <button @click="equals">=</button>
-    <button @click="totalReset">AC</button> 
+    <button @click="totalReset">C</button> 
     <button @click="del">DEL</button>
+    <button @click="ansPushed">ANS </button>
     
   </div>
 </template>
@@ -35,7 +36,9 @@ export default {
       func: null,
       msg: 0,
       charSinceDot: null,
-      ans: 0,
+      ans: null,
+      disabled: false,
+      division: false,
     };
   },
   methods: {
@@ -43,23 +46,25 @@ export default {
       this.oldNumb = +(this.oldNumb.toFixed(n));
     },
     numbWritten(numb) {
-      if(this.newNumb === null){
-        this.newNumb = 0;
+      if (!this.disabled){
+        if(this.newNumb === null){
+          this.newNumb = 0;
+        }
+        if (this.charSinceDot === null) {
+          this.newNumb = this.newNumb*10;
+          this.newNumb +=numb;
+        } else{
+          this.charSinceDot++;
+          this.newNumb += numb * (10 ** (-1 * this.charSinceDot));
+          this.roundTo(6);
+        }
+        this.msg = this.newNumb;
+        console.log("newNumb: " + this.newNumb);
+        console.log("oldNumb: " + this.oldNumb);
       }
-      if (this.charSinceDot === null) {
-        this.newNumb = this.newNumb*10;
-        this.newNumb +=numb;
-      } else{
-        this.charSinceDot++;
-        this.newNumb += numb * (10 ** (-1 * this.charSinceDot));
-        this.roundTo(6);
-      }
-      this.msg = this.newNumb;
-      console.log("newNumb: " + this.newNumb);
-      console.log("oldNumb: " + this.oldNumb);
     },
-    setOperation(newFunc){
-      if(this.newNumb === 0 && toString(this.func) === toString(((n1, n2) => n1 / n2))){
+    setOperation(newFunc, division){
+      if(this.newNumb === 0 && this.division){
         this.oldNumb = NaN;
       } else{
         if(this.func === null){
@@ -69,36 +74,49 @@ export default {
           this.roundTo(6);
         }
       }
+      this.division = division;
       this.newNumb = null;
       this.func = newFunc;
       this.charSinceDot = null;
       this.msg = this.oldNumb;
+      this.disabled = false;
       console.log("newNumb: " + this.newNumb);
       console.log("oldNumb: " + this.oldNumb);
     },
-    totalReset(){
+    resetValues(){
       this.oldNumb=0;
       this.newNumb=null;
       this.func=null;
-      this.msg = this.oldNumb;
       this.charSinceDot = null;
-      console.log("newNumb: " + this.newNumb);
-      console.log("oldNumb: " + this.oldNumb);
+      this.disabled = false;
+      this.division = false;
+    },
+    totalReset(){
+      this.resetValues();
+      this.msg = this.oldNumb;
     },
     del() {
-      if (this.charSinceDot === null){
-        this.newNumb = (this.newNumb - (this.newNumb % 10))/10;
-      } else if (this.charSinceDot === 0){
-        this.charSinceDot = null;
+      if(this.disabled) {
+        this.newNumb = null;
+        this.disabled = false;
+        this.msg = 0;
       } else {
-        this.charSinceDot--;
-        this.newNumb -= (this.newNumb**this.charSinceDot - (this.newNumb**this.charSinceDot % 1))**(-1 * this.charSinceDot);
-        this.roundTo(6);
+        if (this.charSinceDot === null){
+          this.newNumb = (this.newNumb - (this.newNumb % 10))/10;
+        } else if (this.charSinceDot === 0){
+          this.charSinceDot = null;
+        } else {
+          this.charSinceDot--;
+          this.newNumb -= (this.newNumb**this.charSinceDot - (this.newNumb**this.charSinceDot % 1))**(-1 * this.charSinceDot);
+          this.roundTo(6);
+        }
+        this.msg =this.newNumb;
       }
-      this.msg =this.newNumb;
     },
     equals(){
-      if(this.newNumb === 0 && toString(this.func) == toString(((n1, n2) => n1 / n2))){
+      if(this.newNumb === 0 && this.division){
+        console.log(toString(this.func));
+        console.log(toString(((n1, n2) => n1 / n2)));
         this.oldNumb = NaN;
       } else{
         if(this.func === null){
@@ -110,15 +128,23 @@ export default {
         }
       }
       this.msg = this.oldNumb;
-      this.oldNumb=0;
-      this.newNumb=null;
-      this.func=null;
-      this.charSinceDot = null;
-      console.log("newNumb: " + this.newNumb);
+      this.ans = this.oldNumb;
+      this.resetValues();
+      console.log("ans: " + this.ans);
       console.log("oldNumb: " + this.oldNumb);
     },
+    ansPushed(){
+      if (this.ans != null) {
+        console.log("ans: " + this.ans);
+        this.newNumb = this.ans;
+        this.disabled = true;
+        this.msg = this.newNumb;
+        
+      console.log("newNumber: " + this.newNumb);
+      }
+    },
     addDot(){
-      if (this.charSinceDot === null){
+      if (this.charSinceDot === null && !this.disabled){
         this.charSinceDot = 0;
       }
     },
