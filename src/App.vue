@@ -1,5 +1,12 @@
 <template>
-  <router-view />
+  <div id="app">
+    
+    <div id="nav">
+      <router-link :to="{ name: 'Home' }">Home</router-link> |
+      <router-link :to="{ name: 'About' }">About</router-link>
+    </div>
+    <router-view />
+  </div>
 </template>
 
 <style>
@@ -12,7 +19,7 @@ body{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color:aquamarine;
 }
 
 #nav {
