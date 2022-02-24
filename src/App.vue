@@ -2,13 +2,24 @@
   <div id="app">
     
     <div id="nav">
-      <router-link :to="{ name: 'Home' }">Home</router-link> |
-      <router-link :to="{ name: 'Feedback' }">Feedback</router-link>
+      <router-link :to="{ name: 'Home' }">Home</router-link>  | 
+      <router-link :to="{ name: 'Feedback' }">Feedback</router-link>  | 
+      <p v-if="user">{{user}} </p>
+      <router-link v-else :to="{ name: 'LogIn' }">Log In</router-link>
     </div>
     <router-view />
   </div>
 </template>
+<script>
+export default {
+  computed: {
+    user(){
+      return this.$store.state.user
+    }
+  }
 
+}
+</script>
 <style>
 body{
   
@@ -28,7 +39,7 @@ body{
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
 }
 
 #nav a.router-link-exact-active {

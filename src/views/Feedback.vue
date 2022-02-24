@@ -22,7 +22,6 @@
           />
         </div>
         
-        <br>
         <div class="field">
           <BaseInput
             v-model="email"
@@ -137,7 +136,7 @@ export default {
 
 fieldset{
   border-width: 0px;
-  margin: 0px;
+  margin-bottom: 20px;
   padding: 0px;
 }
 

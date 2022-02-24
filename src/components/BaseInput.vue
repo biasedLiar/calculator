@@ -53,6 +53,7 @@ label{
 
 input{
   display: inline;
+  margin-left: 10px;
 }
 
 .errorMessage{

@@ -5,7 +5,11 @@ export default createStore({
     status: '',
     name: '',
     email: '',
-    message: ''
+    message: '',
+    username: 'Elias',
+    password: 'sdf',
+    user: '',
+    loggedIn: 'false'
   },
   mutations: {
     SET_STATUS(state, value){
@@ -15,6 +19,12 @@ export default createStore({
       state.name = feedback.name
       state.email = feedback.email
       state.message = feedback.message
+    },
+    SET_LOGGED_IN(state, value){
+      state.loggedIn = value
+    },
+    SET_USER(state, value){
+      state.user = value
     }
   },
   actions: {
@@ -27,6 +37,11 @@ export default createStore({
             commit('SET_STATUS', "")
           }, 5000);
         }, 1000);
+    },
+    logInAs({commit}, user){
+      console.log(user)
+      commit('SET_LOGGED_IN', true)
+      commit('SET_USER', user)
     }
   },
   modules: {},
