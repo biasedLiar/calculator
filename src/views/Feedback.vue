@@ -1,7 +1,15 @@
 <template>
   <div class="Feedback">
     <h1>Feedback about the calculator</h1>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit({
+      email: this.email,
+      emailError: this.emailError,
+      name: this.name,
+      nameError: this.nameError,
+      message: this.message,
+      messageError: this.messageError,
+      status: this.status
+    })">
       <fieldset>
         <legend>Personal Info</legend>
         <div class="field">
@@ -42,7 +50,7 @@
       
       
       <button type="submit">Submit</button>
-      <p v-if="sending"> Sending </p>
+      <p> {{status}} </p>
     </form>
   </div>
 </template>
@@ -53,12 +61,7 @@ import {useField} from 'vee-validate';
 export default {
   name: "Feedback",
   setup(){
-      let sending = false
-      function onSubmit(){
-        console.log("sending")
-        sending = true
-        //console.log("name: " + this.userdata.name + ", email: " + this.email + ", message: " + this.userdata.message);
-      }
+      
 
       const {value: email, errorMessage: emailError} = useField('email', function (value) {
         if (!value) return 'This field has no value'
@@ -77,25 +80,51 @@ export default {
         return true
       })
 
-      const {value: message, errorMessage: messageError} = useField('name', function (value) {
+      const {value: message, errorMessage: messageError} = useField('message', function (value) {
         if (!value) return 'This field has no value'
 
         return true
       })
 
+
       return {
-        onSubmit,
         email: email,
         emailError: emailError,
         name: name,
         nameError: nameError,
         message: message,
         messageError: messageError,
-        sending,
-
 
 
       }
+    },
+    created(){
+      this.checkForMessage()
+    },
+    data(){
+      return{
+      }
+    },
+    computed: {
+      status(){
+        return this.$store.state.status
+      }
+    },
+    methods: {
+      onSubmit(data){
+        if (!(data.emailError || data.nameError || data.messageError)){
+          this.$store.dispatch('sendFeedback', {email: data.email, name: data.name, message: data.message})
+        }
+      
+      },
+      checkForMessage(){
+        if(this.$store.state.name){
+          this.name = this.$store.state.name
+          this.email = this.$store.state.email
+        }
+      }
+    },
+    mounted(){
     }
 }
 </script>
