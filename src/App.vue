@@ -2,10 +2,10 @@
   <div id="app">
     
     <div id="nav">
+      <p v-if="user">Logged in as {{user}} </p>
+      <router-link v-else :to="{ name: 'LogIn' }">Log In</router-link>  | 
       <router-link :to="{ name: 'Home' }">Home</router-link>  | 
-      <router-link :to="{ name: 'Feedback' }">Feedback</router-link>  | 
-      <p v-if="user">{{user}} </p>
-      <router-link v-else :to="{ name: 'LogIn' }">Log In</router-link>
+      <router-link :to="{ name: 'Feedback' }">Feedback</router-link>
     </div>
     <router-view />
   </div>

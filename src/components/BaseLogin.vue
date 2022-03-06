@@ -12,6 +12,7 @@
         <textarea v-model="password"></textarea>
         <button v-on:click="handleClickSignin">Sign in</button>
       </div>
+      <router-link v-if="loggedInUnsuccesfully" :to="{ name: 'Register' }">Home</router-link>
   </div>
   
 </template>
@@ -25,7 +26,7 @@ export default {
       if (this.logInInfoCorrect()){
         this.$store.dispatch('logInAs', this.username)
       } else{
-        alert("You logged in unsuccesfully")
+        this.loggedInUnsuccesfully = true
       }
     },
     logInInfoCorrect(){
