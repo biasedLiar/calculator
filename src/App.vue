@@ -4,7 +4,8 @@
     <div id="nav">
       <p v-if="user">Logged in as {{user}} </p>
       <router-link v-else :to="{ name: 'LogIn' }">Log In</router-link>  | 
-      <router-link :to="{ name: 'Home' }">Home</router-link>  | 
+      <router-link :to="{ name: 'Home' }">Home</router-link>  |
+      <router-link :to="{ name: 'Code' }">Code</router-link>  | 
       <router-link :to="{ name: 'Feedback' }">Feedback</router-link>
     </div>
     <router-view />
